@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>nomuno｜食べログ集客レポート 2025-06〜2026-06</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --aka:  #C62828;
+      --yura: #1565C0;
+      --futa: #2E7D32;
+      --bg:   #F4F5F7;
+      --card: #fff;
+      --text: #212121;
+      --muted:#6B7280;
+      --border:#E5E7EB;
+      --up:   #2E7D32;
+      --down: #BF360C;
+    }
+    body {
+      font-family: 'Hiragino Sans','Noto Sans JP','Yu Gothic',sans-serif;
+      background: var(--bg); color: var(--text);
+      font-size: 14px; line-height: 1.6;
+    }
+
+    /* HEADER */
+    header {
+      background: linear-gradient(135deg, #6A0000 0%, #C62828 55%, #E53935 100%);
+      color: #fff; padding: 36px 24px 28px;
+    }
+    .header-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: flex; justify-content: space-between;
+      align-items: flex-end; flex-wrap: wrap; gap: 16px;
+    }
+    .header-title { font-size: 12px; font-weight: 700; opacity: .8; letter-spacing: .12em; margin-bottom: 8px; }
+    header h1 { font-size: 26px; font-weight: 800; line-height: 1.3; }
+    .header-meta { font-size: 13px; opacity: .88; text-align: right; line-height: 1.8; }
+    .store-pills { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
+    .pill { padding: 4px 16px; border-radius: 20px; font-size: 12px; font-weight: 600;
+            border: 1.5px solid rgba(255,255,255,.55); background: rgba(255,255,255,.15); }
+
+    /* LAYOUT */
+    main { max-width: 1200px; margin: 0 auto; padding: 28px 16px 48px; }
+    .section-label { font-size: 11px; font-weight: 700; letter-spacing: .1em; color: var(--muted); margin-bottom: 6px; text-transform: uppercase; }
+    .section-title { font-size: 20px; font-weight: 700; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+
+    /* KPI CARDS */
+    .kpi-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; margin-bottom: 40px; }
+    .kpi-card { background: var(--card); border-radius: 14px; padding: 22px 20px;
+                box-shadow: 0 1px 6px rgba(0,0,0,.07); border-top: 4px solid; }
+    .kpi-card.aka  { border-top-color: var(--aka); }
+    .kpi-card.yura { border-top-color: var(--yura); }
+    .kpi-card.futa { border-top-color: var(--futa); }
+    .kpi-store { font-size: 12px; font-weight: 700; letter-spacing: .06em; margin-bottom: 3px; }
+    .kpi-card.aka  .kpi-store { color: var(--aka); }
+    .kpi-card.yura .kpi-store { color: var(--yura); }
+    .kpi-card.futa .kpi-store { color: var(--futa); }
+    .kpi-period { font-size: 11px; color: var(--muted); margin-bottom: 14px; }
+    .kpi-label  { font-size: 11px; color: var(--muted); margin-bottom: 2px; margin-top: 14px; }
+    .kpi-value  { font-family: 'Inter','Helvetica Neue',sans-serif; font-size: 30px; font-weight: 800; line-height: 1.1; }
+    .kpi-value small { font-size: 16px; font-weight: 600; }
+    .kpi-card.aka  .kpi-value { color: var(--aka); }
+    .kpi-card.yura .kpi-value { color: var(--yura); }
+    .kpi-card.futa .kpi-value { color: var(--futa); }
+    .kpi-sub { margin-top: 6px; display: flex; flex-wrap: wrap; gap: 5px; }
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 700; white-space: nowrap; }
+    .badge.up   { background: #E8F5E9; color: var(--up); }
+    .badge.down { background: #FBE9E7; color: var(--down); }
+    .badge.na   { background: #F5F5F5; color: #9E9E9E; }
+    .kpi-reserve { font-size: 18px; font-weight: 700; margin-top: 4px; }
+
+    /* CHARTS */
+    .chart-section { margin-bottom: 40px; }
+    .chart-grid-3 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .chart-card { background: var(--card); border-radius: 14px; padding: 20px;
+                  box-shadow: 0 1px 6px rgba(0,0,0,.06); }
+    .chart-card.full-width { grid-column: 1 / -1; }
+    .chart-card h3 { font-size: 13px; font-weight: 700; color: var(--muted); margin-bottom: 14px; }
+    .chart-card canvas { max-height: 280px; }
+    .chart-full { background: var(--card); border-radius: 14px; padding: 20px;
+                  box-shadow: 0 1px 6px rgba(0,0,0,.06); margin-bottom: 40px; }
+    .chart-full h3 { font-size: 13px; font-weight: 700; color: var(--muted); margin-bottom: 14px; }
+    .chart-full canvas { max-height: 340px; }
+
+    /* STORE INSIGHTS */
+    .store-insight-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; margin-bottom: 16px; }
+    .store-insight-card { background: var(--card); border-radius: 14px; padding: 20px;
+                          box-shadow: 0 1px 6px rgba(0,0,0,.06); border-left: 4px solid; }
+    .store-insight-card.aka  { border-left-color: var(--aka); }
+    .store-insight-card.yura { border-left-color: var(--yura); }
+    .store-insight-card.futa { border-left-color: var(--futa); }
+    .si-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+    .si-icon   { font-size: 20px; }
+    .si-store  { font-size: 11px; font-weight: 700; }
+    .store-insight-card.aka  .si-store { color: var(--aka); }
+    .store-insight-card.yura .si-store { color: var(--yura); }
+    .store-insight-card.futa .si-store { color: var(--futa); }
+    .si-title { font-size: 14px; font-weight: 700; line-height: 1.4; margin-bottom: 10px; }
+    .si-body  { font-size: 12.5px; color: var(--muted); line-height: 1.8; }
+
+    /* 全体総評 */
+    .sousei-card { background: #1E2532; color: #E8ECF0; border-radius: 14px;
+                   padding: 24px 28px; box-shadow: 0 2px 10px rgba(0,0,0,.15); }
+    .sousei-card h4 { font-size: 13px; font-weight: 700; margin-bottom: 14px;
+                      color: #CBD5E1; letter-spacing: .06em; }
+    .sousei-card p  { font-size: 13px; line-height: 1.9; margin-bottom: 12px; }
+    .sousei-card p:last-child { margin-bottom: 0; }
+
+    footer { text-align: center; padding: 28px 16px; color: var(--muted); font-size: 11px; }
+
+    @media (max-width: 800px) {
+      .kpi-grid, .store-insight-grid { grid-template-columns: 1fr; }
+      .chart-grid-3 { grid-template-columns: 1fr; }
+      .chart-card.full-width { grid-column: auto; }
+    }
+
+    /* CPA JUDGMENT CARDS */
+    .cpa-judge-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:20px; }
+    .cpa-card { background:#F8F9FA; border-radius:10px; padding:14px 16px; border:1px solid var(--border); }
+    .cpa-store { font-size:12px; font-weight:700; margin-bottom:6px; }
+    .cpa-nums  { display:flex; gap:12px; align-items:baseline; margin-bottom:8px; flex-wrap:wrap; }
+    .cpa-num   { font-size:18px; font-weight:800; font-family:'Inter','Helvetica Neue',sans-serif; }
+    .cpa-ratio { font-size:11px; color:var(--muted); font-weight:600; }
+    .cpa-badge { display:inline-block; padding:3px 10px; border-radius:10px; font-size:11px; font-weight:700; margin-bottom:8px; }
+    .cpa-badge.go   { background:#E8F5E9; color:#2E7D32; }
+    .cpa-badge.warn { background:#FFF8E1; color:#F57F17; }
+    .cpa-badge.stay { background:#FBE9E7; color:#BF360C; }
+    .cpa-comment { font-size:11.5px; color:var(--muted); line-height:1.75; }
+    @media (max-width:800px) { .cpa-judge-grid { grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div>
+      <div class="header-title">Tabelog Performance Report</div>
+      <h1>nomuno<br>食べログ集客レポート</h1>
+      <div class="store-pills">
+        <span class="pill">🍷 赤坂本店</span>
+        <span class="pill">🚉 有楽町エクスプレス</span>
+        <span class="pill">🌿 二子玉川</span>
+      </div>
+    </div>
+    <div class="header-meta">
+      <strong>集計期間</strong><br>
+      2025年6月 〜 2026年6月<br>
+      対象店舗：3店舗<br>
+      作成日：2026年7月5日
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- ① KPI -->
+  <section style="margin-bottom:40px">
+    <div class="section-label">Latest Month</div>
+    <div class="section-title">直近月（2026年6月）サマリー</div>
+    <div class="kpi-grid">
+
+      <!-- 赤坂 -->
+      <div class="kpi-card aka">
+        <div class="kpi-store">🍷 赤坂本店</div>
+        <div class="kpi-period">前年比あり（13ヶ月）</div>
+
+        <div class="kpi-label">PV（総合）</div>
+        <div class="kpi-value">35,622</div>
+        <div class="kpi-sub">
+          <span class="badge down">▼ 1.1% 前月比</span>
+          <span class="badge up">▲ 5.7% 前年比</span>
+        </div>
+
+        <div class="kpi-label">CV（予約+TEL）</div>
+        <div class="kpi-value">303<small>件</small></div>
+        <div class="kpi-sub">
+          <span class="badge down">▼ 8.2% 前月比</span>
+          <span class="badge up">▲ 27.3% 前年比</span>
+        </div>
+
+        <div class="kpi-label">CV率</div>
+        <div class="kpi-value">0.85%</div>
+        <div class="kpi-sub">
+          <span class="badge down">▼ 前月 0.92%</span>
+          <span class="badge up">▲ 前年 0.71%</span>
+        </div>
+
+        <div class="kpi-label">ネット予約 / TEL通話</div>
+        <div class="kpi-reserve">217組 / 86件</div>
+      </div>
+
+      <!-- 有楽町 -->
+      <div class="kpi-card yura">
+        <div class="kpi-store">🚉 有楽町エクスプレス</div>
+        <div class="kpi-period">前年比あり（13ヶ月）</div>
+
+        <div class="kpi-label">PV（総合）</div>
+        <div class="kpi-value">31,538</div>
+        <div class="kpi-sub">
+          <span class="badge down">▼ 10.5% 前月比</span>
+          <span class="badge down">▼ 25.1% 前年比</span>
+        </div>
+
+        <div class="kpi-label">CV（予約+TEL）</div>
+        <div class="kpi-value">90<small>件</small></div>
+        <div class="kpi-sub">
+          <span class="badge down">▼ 23.7% 前月比</span>
+          <span class="badge down">▼ 17.4% 前年比</span>
+        </div>
+
+        <div class="kpi-label">CV率</div>
+        <div class="kpi-value">0.29%</div>
+        <div class="kpi-sub">
+          <span class="badge down">▼ 前月 0.34%</span>
+          <span class="badge up">▲ 前年 0.26%</span>
+        </div>
+
+        <div class="kpi-label">ネット予約 / TEL通話</div>
+        <div class="kpi-reserve">45組 / 44件</div>
+      </div>
+
+      <!-- 二子玉川 -->
+      <div class="kpi-card futa">
+        <div class="kpi-store">🌿 二子玉川</div>
+        <div class="kpi-period">2025-10開業 ／ 前年比なし</div>
+
+        <div class="kpi-label">PV（総合）</div>
+        <div class="kpi-value">13,056</div>
+        <div class="kpi-sub">
+          <span class="badge down">▼ 17.7% 前月比</span>
+          <span class="badge na">前年 N/A</span>
+        </div>
+
+        <div class="kpi-label">CV（予約+TEL）</div>
+        <div class="kpi-value">50<small>件</small></div>
+        <div class="kpi-sub">
+          <span class="badge down">▼ 37.5% 前月比</span>
+          <span class="badge na">前年 N/A</span>
+        </div>
+
+        <div class="kpi-label">CV率</div>
+        <div class="kpi-value">0.38%</div>
+        <div class="kpi-sub">
+          <span class="badge down">▼ 前月 0.50%</span>
+          <span class="badge na">前年 N/A</span>
+        </div>
+
+        <div class="kpi-label">ネット予約 / TEL通話</div>
+        <div class="kpi-reserve">40組 / 10件</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ② チャート -->
+  <section class="chart-section">
+    <div class="section-label">Trend Charts</div>
+    <div class="section-title">月次推移チャート</div>
+    <div class="chart-grid-3">
+
+      <div class="chart-card">
+        <h3>① PV ＆ CV推移（3店舗・2軸）</h3>
+        <canvas id="chartPvCv"></canvas>
+      </div>
+
+      <div class="chart-card">
+        <h3>② CV率推移（3店舗比較）</h3>
+        <canvas id="chartCvr"></canvas>
+      </div>
+
+      <div class="chart-card full-width">
+        <h3>③ TEL vs ネット予約（全店月次）</h3>
+        <canvas id="chartReserve"></canvas>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- CPA推移 -->
+  <section style="margin-bottom:40px">
+    <div class="section-label">CPA Analysis</div>
+    <div class="section-title">CPA（1CV獲得コスト）月次推移 2025年10月〜2026年6月</div>
+    <div class="chart-full">
+      <h3>月額プラン費 ÷ 月間CV数 ｜ 数値が小さいほど効率的</h3>
+      <canvas id="chartCpa"></canvas>
+    </div>
+    <div class="cpa-judge-grid">
+
+      <div class="cpa-card">
+        <div class="cpa-store" style="color:var(--aka)">🍷 赤坂本店</div>
+        <div class="cpa-nums">
+          <span class="cpa-num" style="color:var(--aka)">¥287</span>
+          <span class="cpa-ratio">客単価比 7.2%（¥4,000）｜目標CPA ¥840</span>
+        </div>
+        <div class="cpa-badge go">🟢 目標CPA内・安定推移</div>
+        <div class="cpa-comment">実請求÷課金対象客数でCPA¥287、目標CPA（¥840）の約34%。非常に高い費用対効果。現プランを継続しつつ、さらなる集客施策で拡大を優先。</div>
+      </div>
+
+      <div class="cpa-card">
+        <div class="cpa-store" style="color:var(--yura)">🚉 有楽町エクスプレス</div>
+        <div class="cpa-nums">
+          <span class="cpa-num" style="color:var(--yura)">¥323</span>
+          <span class="cpa-ratio">客単価比 10.8%（¥3,000）｜目標CPA ¥630</span>
+        </div>
+        <div class="cpa-badge go">🟢 目標CPA内・効率良好</div>
+        <div class="cpa-comment">実請求÷課金対象客数でCPA¥323、目標CPA（¥630）の約51%。ライトプランで良好な費用対効果。PV・CVの下落トレンド改善のため、ネット予約導線の強化を優先。</div>
+      </div>
+
+      <div class="cpa-card">
+        <div class="cpa-store" style="color:var(--futa)">🌿 二子玉川</div>
+        <div class="cpa-nums">
+          <span class="cpa-num" style="color:var(--futa)">¥1,339</span>
+          <span class="cpa-ratio">客単価比 33.5%（¥4,000）｜目標CPA ¥840</span>
+        </div>
+        <div class="cpa-badge stay">🔴 CPA大幅超過・CV確保が急務</div>
+        <div class="cpa-comment">実請求÷課金対象客数でCPA¥1,339と目標（¥840）の1.6倍。プレミアム10の固定費に対し課金対象客数が全店最低水準。プランダウン（プレミアム5）またはページ改善による課金対象客数の大幅増加が必要。</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ③ マトリクス -->
+  <section style="margin-bottom:40px">
+    <div class="section-label">Priority Matrix</div>
+    <div class="section-title">PV × CV率 優先度マトリクス（期間平均）</div>
+    <div class="chart-full">
+      <h3>バブルサイズ＝期間平均PV規模 ｜ X軸＝期間平均CV率(%) ｜ Y軸＝月平均CV件数</h3>
+      <canvas id="chartBubble"></canvas>
+    </div>
+  </section>
+
+  <!-- ④ インサイト -->
+  <section>
+    <div class="section-label">Insights</div>
+    <div class="section-title">総評・店舗別所見</div>
+
+    <div class="store-insight-grid">
+
+      <div class="store-insight-card aka">
+        <div class="si-header">
+          <span class="si-icon">🍷</span>
+          <span class="si-store">赤坂本店</span>
+        </div>
+        <div class="si-title">3店舗最高CV率。2026-04のPV急騰（62,596）の要因分析が課題</div>
+        <div class="si-body">
+          2026-06のCV303件は前年比+27.3%と力強い成長。CV率0.85%は3店舗トップ。秋（2025-09）にCV422・CV率1.11%の年間ピークがあり、秋の予約需要の高さが際立つ。一方、2026-04にPVが62,596（平均の1.7倍）に急騰したが、CV374・CV率0.60%と転換は低調。急騰の原因（メディア掲載・SNS拡散など）を特定し、次回施策に活かしたい。
+        </div>
+      </div>
+
+      <div class="store-insight-card yura">
+        <div class="si-header">
+          <span class="si-icon">🚉</span>
+          <span class="si-store">有楽町エクスプレス</span>
+        </div>
+        <div class="si-title">PV・CVともに前年比マイナス。CV率は3店舗最低の0.29%</div>
+        <div class="si-body">
+          2026-06のPV31,538は前年比-25.1%、CV90件は-17.4%とトレンド下落が鮮明。Express業態のため一定のCV率低下は想定内だが、TEL比率が49%（44/90件）と赤坂（28%）・二子玉川（20%）より高く、ネット予約誘導の改善余地が大きい。2025-12に年間最高CV142件を記録しており、繁忙期に向けた予約ページ最適化とクーポン施策の早期準備が重要。
+        </div>
+      </div>
+
+      <div class="store-insight-card futa">
+        <div class="si-header">
+          <span class="si-icon">🌿</span>
+          <span class="si-store">二子玉川</span>
+        </div>
+        <div class="si-title">2025-10開業。2026-06はPV・CV共に急落、口コミ蓄積が急務</div>
+        <div class="si-body">
+          2025-10開業で初月からPV約2万・CV81件を記録。2025-12にCV92件のピーク後、2026-02にCV51件まで落ち込み、2026-06は50件と再び低水準。ネット予約比率80%（40/50件）は3店舗中最高で予約導線は健全。PV低下の主因は口コミ件数の不足と考えられ、来店客へのレビュー促進・オーナー返信対応の強化が評点向上・検索露出増加に直結する。
+        </div>
+      </div>
+
+    </div>
+
+    <div class="sousei-card">
+      <h4>📋 全体総評</h4>
+      <p>3店舗合計CVは2026年6月に443件（赤坂303・有楽町90・二子玉川50）、PV合計は80,216件。赤坂が安定してCV・CV率を牽引しているが、有楽町のPV前年比-25.1%・CV前年比-17.4%というトレンド下落が全体の足を引っ張っている。</p>
+      <p>CV率は赤坂0.85%・二子玉川0.38%・有楽町0.29%の順。業態差（フルサービスvs Express）を考慮しても、有楽町のCV率は改善余地が大きい。ネット予約比率を赤坂水準（72%）まで引き上げることが優先施策。</p>
+      <p>二子玉川は開業から9ヶ月で口コミ蓄積フェーズにあり、今後の評点向上が中長期のPV・CV維持に直結する。赤坂・有楽町の知見（季節性・クーポン施策）を二子玉川へ横展開することで相乗効果が期待できる。</p>
+    </div>
+
+  </section>
+
+</main>
+
+<footer>
+  データソース：食べログ オーナー管理画面 ｜ 分析期間：2025年6月〜2026年6月 ｜ 作成日：2026年7月5日
+</footer>
+
+<script>
+const C = { aka: '#C62828', yura: '#1565C0', futa: '#2E7D32' };
+const baseFont = { family:"'Hiragino Sans','Noto Sans JP',sans-serif", size:12 };
+
+const MONTHS = [
+  '2025-06','2025-07','2025-08','2025-09','2025-10','2025-11','2025-12',
+  '2026-01','2026-02','2026-03','2026-04','2026-05','2026-06'
+];
+
+const AKA = {
+  pv:  [33705,31833,37394,37937,36889,41072,33650,34766,34357,33591,62596,36006,35622],
+  cv:  [238,206,304,422,326,299,304,260,261,271,374,330,303],
+  tel: [67,51,84,92,109,93,94,90,78,71,98,84,86],
+  net: [167,153,217,327,215,203,209,166,180,200,274,245,217]
+};
+
+const YURA = {
+  pv:  [42086,34628,37228,36082,36730,39855,43492,33267,32330,34743,35859,35228,31538],
+  cv:  [109,119,107,105,108,104,142,75,94,114,98,118,90],
+  tel: [70,76,70,63,71,73,92,54,67,71,57,71,44],
+  net: [39,42,34,41,36,30,50,21,24,43,41,47,45]
+};
+
+const FUTA = {
+  pv:  [null,null,null,null,19986,18003,17363,14593,15117,16979,18904,15863,13056],
+  cv:  [null,null,null,null,81,89,92,66,51,86,77,80,50],
+  tel: [null,null,null,null,29,13,20,19,13,19,18,17,10],
+  net: [null,null,null,null,49,70,71,47,38,63,59,63,40]
+};
+
+function cvRate(pv, cv) { return (pv !== null && pv > 0) ? cv / pv * 100 : null; }
+const AKA_CVR  = AKA.pv.map((p,i)  => cvRate(p, AKA.cv[i]));
+const YURA_CVR = YURA.pv.map((p,i) => cvRate(p, YURA.cv[i]));
+const FUTA_CVR = FUTA.pv.map((p,i) => cvRate(p, FUTA.cv[i]));
+
+// ① PV+CV 2軸（3店舗）
+new Chart(document.getElementById('chartPvCv'), {
+  type:'line',
+  data:{
+    labels: MONTHS,
+    datasets:[
+      { label:'赤坂 PV',   data:AKA.pv,  borderColor:C.aka,  fill:false, borderWidth:2.5, pointRadius:3, tension:.3, spanGaps:false, yAxisID:'yPV' },
+      { label:'有楽町 PV', data:YURA.pv, borderColor:C.yura, fill:false, borderWidth:2,   pointRadius:3, tension:.3, spanGaps:false, yAxisID:'yPV' },
+      { label:'二子玉川 PV',data:FUTA.pv,borderColor:C.futa, fill:false, borderWidth:2,   pointRadius:3, tension:.3, spanGaps:false, yAxisID:'yPV' },
+      { label:'赤坂 CV',   data:AKA.cv,  borderColor:C.aka,  fill:false, borderWidth:1.5, pointRadius:4, tension:.3, spanGaps:false, borderDash:[5,4], yAxisID:'yCV' },
+      { label:'有楽町 CV', data:YURA.cv, borderColor:C.yura, fill:false, borderWidth:1.5, pointRadius:4, tension:.3, spanGaps:false, borderDash:[5,4], yAxisID:'yCV' },
+      { label:'二子玉川 CV',data:FUTA.cv,borderColor:C.futa, fill:false, borderWidth:1.5, pointRadius:4, tension:.3, spanGaps:false, borderDash:[5,4], yAxisID:'yCV' }
+    ]
+  },
+  options:{
+    responsive:true,
+    plugins:{ legend:{ labels:{ font:baseFont, boxWidth:14, padding:10 } }, tooltip:{ mode:'index', intersect:false } },
+    scales:{
+      x:{ ticks:{ font:{ size:10 }, maxRotation:45 } },
+      yPV:{ type:'linear', position:'left',  title:{ display:true, text:'PV（実線）', font:{ size:11 } }, ticks:{ font:{ size:11 } } },
+      yCV:{ type:'linear', position:'right', title:{ display:true, text:'CV件数（破線）', font:{ size:11 } }, grid:{ drawOnChartArea:false }, ticks:{ font:{ size:11 } } }
+    }
+  }
+});
+
+// ② CV率推移
+new Chart(document.getElementById('chartCvr'), {
+  type:'line',
+  data:{
+    labels:MONTHS,
+    datasets:[
+      { label:'赤坂本店',       data:AKA_CVR,  borderColor:C.aka,  fill:false, pointRadius:4, tension:.3, spanGaps:false },
+      { label:'有楽町エクスプレス', data:YURA_CVR, borderColor:C.yura, fill:false, pointRadius:4, tension:.3, spanGaps:false },
+      { label:'二子玉川',        data:FUTA_CVR, borderColor:C.futa, fill:false, pointRadius:4, tension:.3, spanGaps:false }
+    ]
+  },
+  options:{
+    responsive:true,
+    plugins:{ legend:{ labels:{ font:baseFont } } },
+    scales:{
+      x:{ ticks:{ font:{ size:11 }, maxRotation:45 } },
+      y:{ min:0, title:{ display:true, text:'CV率 (%)', font:{ size:11 } },
+          ticks:{ font:{ size:11 }, callback: v => v.toFixed(1)+'%' } }
+    }
+  }
+});
+
+// ③ TEL vs ネット予約
+new Chart(document.getElementById('chartReserve'), {
+  type:'bar',
+  data:{
+    labels:MONTHS,
+    datasets:[
+      { label:'赤坂 TEL',       data:AKA.tel,  backgroundColor:C.aka+'55',  stack:'aka'  },
+      { label:'赤坂 ネット',     data:AKA.net,  backgroundColor:C.aka,       stack:'aka'  },
+      { label:'有楽町 TEL',      data:YURA.tel, backgroundColor:C.yura+'55', stack:'yura' },
+      { label:'有楽町 ネット',   data:YURA.net, backgroundColor:C.yura,      stack:'yura' },
+      { label:'二子玉川 TEL',    data:FUTA.tel, backgroundColor:C.futa+'55', stack:'futa' },
+      { label:'二子玉川 ネット', data:FUTA.net, backgroundColor:C.futa,      stack:'futa' }
+    ]
+  },
+  options:{
+    responsive:true,
+    plugins:{ legend:{ labels:{ font:baseFont, boxWidth:12, padding:10 } } },
+    scales:{
+      x:{ ticks:{ font:{ size:10 }, maxRotation:45 } },
+      y:{ title:{ display:true, text:'件数', font:{ size:11 } }, ticks:{ font:{ size:11 } } }
+    }
+  }
+});
+
+// ④ バブルチャート
+// 赤坂:  期間平均PV≈36109, 期間平均CV≈300, 期間CVR=0.83%
+// 有楽町: 期間平均PV≈36390, 期間平均CV≈106, 期間CVR=0.29%
+// 二子玉川: 期間平均PV≈16652 (9ヶ月), 期間平均CV≈75, 期間CVR=0.45%
+new Chart(document.getElementById('chartBubble'), {
+  type:'bubble',
+  data:{
+    datasets:[
+      { label:'赤坂本店',       data:[{ x:0.83, y:300, r:36 }], backgroundColor:C.aka+'88',  borderColor:C.aka,  borderWidth:2 },
+      { label:'有楽町エクスプレス', data:[{ x:0.29, y:106, r:36 }], backgroundColor:C.yura+'88', borderColor:C.yura, borderWidth:2 },
+      { label:'二子玉川',        data:[{ x:0.45, y:75,  r:25 }], backgroundColor:C.futa+'88', borderColor:C.futa, borderWidth:2 }
+    ]
+  },
+  options:{
+    responsive:true,
+    plugins:{
+      legend:{ labels:{ font:baseFont } },
+      tooltip:{ callbacks:{ label: ctx => {
+        const d = ctx.raw;
+        return `${ctx.dataset.label}：CV率 ${d.x.toFixed(2)}%  /  月平均CV ${d.y}件`;
+      }}}
+    },
+    scales:{
+      x:{ min:0, max:1.5, title:{ display:true, text:'期間平均CV率 (%)', font:{ size:12 } }, ticks:{ callback: v => v+'%' } },
+      y:{ min:0, title:{ display:true, text:'月平均CV件数', font:{ size:12 } } }
+    }
+  }
+});
+
+// CPA推移チャート
+const CPA_MONTHS = ['2025-10','2025-11','2025-12','2026-01','2026-02','2026-03','2026-04','2026-05','2026-06'];
+const AKA_CPA   = [287,287,269,310,305,285,260,265,287]; // 実請求÷課金対象客数
+const YURA_CPA  = [372,343,312,503,444,305,315,315,323]; // 実請求÷課金対象客数
+const FUTA_CPA  = [664,504,466,625,691,941,897,991,1339]; // 実請求÷課金対象客数
+const AKA_SALES  = [508,476,518,451,433,517,569,528,495];   // 万円
+const YURA_SALES = [574,613,640,538,515,569,565,574,493];
+const FUTA_SALES = [176,212,218,181,157,224,206,227,137];
+
+new Chart(document.getElementById('chartCpa'), {
+  type:'bar',
+  data:{
+    labels: CPA_MONTHS,
+    datasets:[
+      { type:'bar',  label:'赤坂 売上（万円）',     data:AKA_SALES,  backgroundColor:'rgba(198,40,40,.12)',  borderColor:'rgba(198,40,40,.3)',  borderWidth:1, yAxisID:'y2', order:2 },
+      { type:'bar',  label:'有楽町 売上（万円）',   data:YURA_SALES, backgroundColor:'rgba(21,101,192,.12)', borderColor:'rgba(21,101,192,.3)', borderWidth:1, yAxisID:'y2', order:2 },
+      { type:'bar',  label:'二子玉川 売上（万円）', data:FUTA_SALES, backgroundColor:'rgba(46,125,50,.12)',  borderColor:'rgba(46,125,50,.3)',  borderWidth:1, yAxisID:'y2', order:2 },
+      { type:'line', label:'赤坂本店（実請求CPA）',          data:AKA_CPA,  borderColor:C.aka,  backgroundColor:C.aka,  fill:false, pointRadius:5, tension:.3, spanGaps:false, borderWidth:2.5, yAxisID:'y1', order:1 },
+      { type:'line', label:'有楽町エクスプレス（実請求CPA）', data:YURA_CPA, borderColor:C.yura, backgroundColor:C.yura, fill:false, pointRadius:5, tension:.3, spanGaps:false, borderWidth:2,   yAxisID:'y1', order:1 },
+      { type:'line', label:'二子玉川（実請求CPA）',           data:FUTA_CPA, borderColor:C.futa, backgroundColor:C.futa, fill:false, pointRadius:5, tension:.3, spanGaps:false, borderWidth:2,   yAxisID:'y1', order:1 }
+    ]
+  },
+  options:{
+    responsive:true,
+    plugins:{
+      legend:{ labels:{ font:baseFont, boxWidth:14, padding:10 } },
+      tooltip:{
+        callbacks:{
+          label: ctx => {
+            const v = ctx.raw;
+            if(ctx.dataset.label.includes('売上'))
+              return `${ctx.dataset.label}: ${v != null ? '¥'+v.toLocaleString()+'万' : 'N/A'}`;
+            return `${ctx.dataset.label.split('（')[0]}  CPA: ${v != null ? '¥'+Math.round(v).toLocaleString() : 'N/A'}/CV`;
+          }
+        }
+      }
+    },
+    scales:{
+      x:{ ticks:{ font:{ size:11 }, maxRotation:45 } },
+      y1:{
+        type:'linear', position:'left', min:0,
+        title:{ display:true, text:'CPA（¥/CV）', font:{ size:11 } },
+        ticks:{ font:{ size:11 }, callback: v => '¥'+v.toLocaleString() }
+      },
+      y2:{
+        type:'linear', position:'right', min:0,
+        title:{ display:true, text:'月間売上（万円）', font:{ size:11 } },
+        ticks:{ font:{ size:11 }, callback: v => v+'万' },
+        grid:{ drawOnChartArea:false }
+      }
+    }
+  }
+});
+</script>
+</body>
+</html>
